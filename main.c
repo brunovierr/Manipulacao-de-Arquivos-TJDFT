@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tp1.h"
+#include "tp1.h" // teste
 
 int main(){
 
