@@ -6,15 +6,15 @@
 
 typedef struct {
     // atributos de texto.
-    int id_processo[50];
-    int numero_sigilo[50];
+    int id_processo;
+    int numero_sigilo;
     char sigla_grau[5];
     char procedimento[100];
     char ramo_justica[5];
     char sigla_tribunal[10];
     char recurso[5];
-    int id_ultimo_oj[50];
-    int id_ultima_classe[50];
+    int id_ultimo_oj;
+    int id_ultima_classe;
     
     // datas
     char dt_recebimento[20];
@@ -43,7 +43,8 @@ typedef struct {
     int desm1;
     int susm1;
 
-} processo
+} processo;
 
+processo *le_dados(char *Arquivo, int *qtd); // Le o arquivo
 
 #endif
