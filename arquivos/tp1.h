@@ -1,7 +1,7 @@
 #ifndef TP1_H
 #define TP1_H
 
-
+#define ERRO -1 
 /* PROTÓTIPOS E STRUCTS */
 
 typedef struct {

@@ -4,11 +4,9 @@
 
 #include "tp1.h" // cabeçalho - header para TP01
 
-int main(){
+int main() {
+    int n_linhas;
+    processo *X = le_dados("TJDFT_amostra.csv", &n_linhas);
     
-    int qtd;
-    processo *x = le_dados("TJDFT_amostra.csv", &qtd); // Le o arquivo - (retorna vetor pelo ponteiro)
-
-    printf("Total de processos: %d\n", qtd);
-    return 0;
+    printf("Total de linhas lidas: %d\n", n_linhas);
 }
