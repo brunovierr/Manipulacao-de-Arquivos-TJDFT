@@ -2,34 +2,38 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "processos.h"
+#include "tp01.h"
 
 
 int main() {
-    system("cls");
+    system("cls"); // começa limpando o terminal
 
     int Num;
 
-    Processo * processos = ler_Dados("TJDFT_amostra.csv", &Num); // passado com & para receber alterações no * de qtd
+    const char *arquivoOriginal = "TJDFT_amostra.csv"; // csv original
+    const char *arquivoFiltrado = "processosJulgados.csv"; // novo arquivo
 
-    printf("Foram lidos %d processos.\n", Num);
+    if (novoArquivoCsv(arquivoOriginal, arquivoFiltrado) == 0) {
+        printf("Arquivo '%s' gerado com sucesso!\n", arquivoFiltrado);
+    } else {
+        printf("Falha ao gerar o arquivo filtrado.\n");
+    }
 
-    pesquisa_id_ultimo_oj(processos, &Num, 323961076); // falta fazer o gerador de planilha csv nao sei o que la
+    Processo * processos = ler_Dados("TJDFT_amostra.csv", &Num); // passado com & para receber alterações no ponteiro de qtd
+
+    printf("Foram lidos %d processos no total.\n", Num);
+
+    pesquisa_id_ultimo_oj(processos, &Num, 323961076);
+    processoMaisAntigo(processos, Num);
     contar_flag_violencia_domestica(processos, Num);
     contar_flag_feminicidio(processos, Num);
     contar_flag_ambiental(processos, Num);
     contar_flag_quilombolas(processos, Num);
     contar_flag_indigenas(processos, Num);
     contar_flag_infancia(processos, Num);   
-    dif_dias_processo(processos,Num, 323961078);
-    meta1(processos,Num,323961078);
-    
-    int id_antigo = processo_mais_antigo(processos, Num);
+    dif_dias_processo(processos,Num, 323961069);
+    meta1(processos,Num,323961063);
 
-    if (id_antigo != -1)
-        printf("Processo com dt_recebimento mais antigo: %d\n", id_antigo);
-
-
-    free(processos);
+    free(processos); // libera memória de "processos"
     return 0;
 }

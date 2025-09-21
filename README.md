@@ -1,17 +1,10 @@
-# Atividade Manipulação de Arquivos em C
+# Atividade Manipulação de Arquivos em C 🤯
 
-Projeto Git para testes com: ``Versionamento em Git``, ``Tipo Abstrato de Dados (TAD)`` e ``Processo``.
+> *por Lucas Alves e Bruno de França*
 
+Projeto Git para testes com: ``Versionamento em Git``, ``Tipo Abstrato de Dados (TAD)`` e ``Pesquisa Sequencial``.
 
-infancia 26936 
-ind 6 
-quilo 1
-ambient 6222
-femin
-violencia 167770
-casos novos 264728 
-julga 264120
-prim sent 231966 
-susp 4879
-dessobrestados 2896 
-meta1 100.523
+Pontos importantes:
+- Projeto separado em 3 arquivos principais `main.c` para chamadas das funções, `tp01.c` para implementação das funções e `tp01.h` header para declaração e prototipação (+ arquivo csv);
+
+- Arquivo CSV **precisa** estar na mesma pasta do código para ser acessado e alterado (*gerar novo arquivo filtrado*).

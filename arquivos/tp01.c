@@ -29,7 +29,7 @@ int NumProcessos(const char *nomeArquivo)
     return count;
 }
 
-void LendoString(char *dest, char *token)
+void lerString(char *dest, char *token)
 {
     if (token == NULL || strlen(token) == 0)
     {
@@ -37,12 +37,11 @@ void LendoString(char *dest, char *token)
     }
     else
     {
-
         strcpy(dest, token);
     }
 }
 
-int LendoInt(char *token)
+int letInt(char *token)
 {
     if (token == NULL || strlen(token) == 0)
     {
@@ -92,36 +91,36 @@ Processo *ler_Dados(char *nomeArquivo, int *Num)
         if (token == NULL)
         {
             printf("Linha %d inválida.\n", i);
-            continue;
+            continue; // pula para proxima linha
         }
 
-        A[i].id_processo = LendoInt(token);
-        LendoString(A[i].numero_sigilo, strtok(NULL, ";"));
-        LendoString(A[i].sigla_grau, strtok(NULL, ";"));
-        LendoString(A[i].procedimento, strtok(NULL, ";"));
-        LendoString(A[i].ramo_justica, strtok(NULL, ";"));
-        LendoString(A[i].sigla_tribunal, strtok(NULL, ";"));
-        A[i].id_tribunal = LendoInt(strtok(NULL, ";"));
-        A[i].recurso = LendoInt(strtok(NULL, ";"));
-        A[i].id_ultimo_oj = LendoInt(strtok(NULL, ";"));
-        LendoString(A[i].dt_recebimento, strtok(NULL, ";"));
-        A[i].id_ultima_classe = LendoInt(strtok(NULL, ";"));
-        A[i].flag_violencia_domestica = LendoInt(strtok(NULL, ";"));
-        A[i].flag_feminicidio = LendoInt(strtok(NULL, ";"));
-        A[i].flag_ambiental = LendoInt(strtok(NULL, ";"));
-        A[i].flag_quilombolas = LendoInt(strtok(NULL, ";"));
-        A[i].flag_indigenas = LendoInt(strtok(NULL, ";"));
-        A[i].flag_infancia = LendoInt(strtok(NULL, ";"));
-        LendoString(A[i].decisao, strtok(NULL, ";"));
-        LendoString(A[i].dt_resolvido, strtok(NULL, ";"));
-        A[i].cnm1 = LendoInt(strtok(NULL, ";"));
-        A[i].primeirasentm1 = LendoInt(strtok(NULL, ";"));
-        A[i].baixm1 = LendoInt(strtok(NULL, ";"));
-        A[i].decm1 = LendoInt(strtok(NULL, ";"));
-        A[i].mpum1 = LendoInt(strtok(NULL, ";"));
-        A[i].julgadom1 = LendoInt(strtok(NULL, ";"));
-        A[i].desm1 = LendoInt(strtok(NULL, ";"));
-        A[i].susm1 = LendoInt(strtok(NULL, ";"));
+        A[i].id_processo = letInt(token);
+        lerString(A[i].numero_sigilo, strtok(NULL, ";"));
+        lerString(A[i].sigla_grau, strtok(NULL, ";"));
+        lerString(A[i].procedimento, strtok(NULL, ";"));
+        lerString(A[i].ramo_justica, strtok(NULL, ";"));
+        lerString(A[i].sigla_tribunal, strtok(NULL, ";"));
+        A[i].id_tribunal = letInt(strtok(NULL, ";"));
+        A[i].recurso = letInt(strtok(NULL, ";"));
+        A[i].id_ultimo_oj = letInt(strtok(NULL, ";"));
+        lerString(A[i].dt_recebimento, strtok(NULL, ";"));
+        A[i].id_ultima_classe = letInt(strtok(NULL, ";"));
+        A[i].flag_violencia_domestica = letInt(strtok(NULL, ";"));
+        A[i].flag_feminicidio = letInt(strtok(NULL, ";"));
+        A[i].flag_ambiental = letInt(strtok(NULL, ";"));
+        A[i].flag_quilombolas = letInt(strtok(NULL, ";"));
+        A[i].flag_indigenas = letInt(strtok(NULL, ";"));
+        A[i].flag_infancia = letInt(strtok(NULL, ";"));
+        lerString(A[i].decisao, strtok(NULL, ";"));
+        lerString(A[i].dt_resolvido, strtok(NULL, ";"));
+        A[i].cnm1 = letInt(strtok(NULL, ";"));
+        A[i].primeirasentm1 = letInt(strtok(NULL, ";"));
+        A[i].baixm1 = letInt(strtok(NULL, ";"));
+        A[i].decm1 = letInt(strtok(NULL, ";"));
+        A[i].mpum1 = letInt(strtok(NULL, ";"));
+        A[i].julgadom1 = letInt(strtok(NULL, ";"));
+        A[i].desm1 = letInt(strtok(NULL, ";"));
+        A[i].susm1 = letInt(strtok(NULL, ";"));
 
         i++;
     }
@@ -138,50 +137,30 @@ void pesquisa_id_ultimo_oj(Processo *A, int *Num, int id_processo)
     {
         if (A[i].id_processo == id_processo)
         {
-            printf("Ultima Orientacao Jurisprudencial (OJ): %d \t -> Processo: %d (ID DO PROCESSO).\n",
+            printf("ID Ultima Orientacao Jurisprudencial (OJ): %d\t -> Processo: %d (ID DO PROCESSO).\n",
                    A[i].id_ultimo_oj, id_processo);
         }
     }
 }
 
-/* int processo_mais_antigo(Processo *A, int Num) {
-    if (Num == 0) return -1; // caso não haja processos
+void processoMaisAntigo(Processo *A, int Num) { // o id_processo do processo com dt_recebimento mais antigo;
+    if (Num <= 0){
+        printf("Sem processos.\n");
+    } // sem processos
 
-    int i;
     int id_antigo = A[0].id_processo;
-    struct tm tm_antigo = {0};
-    int ano, mes, dia;
+    char dt_antiga[30];
+    strcpy(dt_antiga, A[0].dt_recebimento);
 
-    // converte a primeira data
-    if (sscanf(A[0].dt_recebimento, "%d-%d-%d", &ano, &mes, &dia) != 3) {
-        printf("Formato inválido em dt_recebimento: %s\n", A[0].dt_recebimento);
-        return -1;
-    }
-    tm_antigo.tm_year = ano - 1900;
-    tm_antigo.tm_mon = mes - 1;
-    tm_antigo.tm_mday = dia;
-    time_t t_antigo = mktime(&tm_antigo);
-
-    for (i = 1; i < Num; i++) {
-        if (sscanf(A[i].dt_recebimento, "%d-%d-%d", &ano, &mes, &dia) != 3) {
-            printf("Formato inválido em dt_recebimento: %s\n", A[i].dt_recebimento);
-            continue;
-        }
-        struct tm tm_atual = {0};
-        tm_atual.tm_year = ano - 1900;
-        tm_atual.tm_mon = mes - 1;
-        tm_atual.tm_mday = dia;
-        time_t t_atual = mktime(&tm_atual);
-
-        if (difftime(t_atual, t_antigo) < 0) {
-            t_antigo = t_atual;
+    for (int i = 1; i < Num; i++) {
+        if (strcmp(A[i].dt_recebimento, dt_antiga) < 0) {
+            strcpy(dt_antiga, A[i].dt_recebimento);
             id_antigo = A[i].id_processo;
         }
     }
 
-    return id_antigo;
+    printf("Processo mais antigo: %d. (%s)\n", id_antigo, dt_antiga);
 }
-    */ !!!!!!!!!!!!!!!! ENTENDER COMO FUNCIONA !!!!!!!!!!!!!!!!!!!!!!
 
 void contar_flag_violencia_domestica(Processo *A, int Num)
 { // quantos processos estão relacionadas a causas de violência doméstica
@@ -314,55 +293,62 @@ void meta1(Processo *A, int Num, int id_processo)
             int desm1 = A[i].desm1;
             int susm1 = A[i].susm1;
 
-            // aq verifica se eh possivel fazer o calculo da meta1
-            if ((cnm1 + desm1 - susm1) == 0)
+            // verifica se possível realizar o calculo da meta (csm, desm e susm maiores que 0)
+            if ((cnm1 + desm1 + susm1) == 0)
             {
-                printf("Erro: denominador zero para o processo %d\n", id_processo);
+                printf("Erro: denominador zero para o processo %d, impossivel realizar o calculo da meta.\n", id_processo);
                 return;
             }
 
-            double meta1 = (double)julgadom1 / (cnm1 + desm1 - susm1) * 100.0;
+            double meta1 = (double)julgadom1 / (cnm1 + desm1 - susm1) * 100.0; // calculo meta
             printf("Processo %d: Cumprimento da Meta 1 = %.2f%%\n", id_processo, meta1);
         }
     }
 }
 
-/*
-int orgaoJulgador(Processo *x, int id_processo, int qtd) {
-    for (int i = 0; i < qtd; i++)
-        if (x[i].id_processo == id_processo) {
-            return x[i].id_ultimo_oj;
-        }
-    return -1; // Processo não encontrado
-}
+int novoArquivoCsv(const char *nomeArquivoOriginal, const char *arquivoNovoNome) { // gerar um arquivo CSV com todos os processos julgados (mérito) na Meta 1.
 
-int indiceProcessoMaisAntigo(Processo *x, int qtd) {
-    if (qtd <= 0) {
-        return -1;
+    FILE *primeiroArquivo = fopen(nomeArquivoOriginal, "r"); // le o arquivo tjdft
+    FILE *arquivoNovo   = fopen(arquivoNovoNome, "w"); // cria novo arquivo filtrado
+
+    if (!primeiroArquivo || !arquivoNovo) {
+        printf("Erro ao abrir arquivos!\n");
+        return 1;
     }
 
-    int indiceMaisAntigo = 0;
+    char linha[CARACTERES_LINHA];
 
-    for (int i = 1; i < qtd; i++) {
-        if (
-            strcmp(x[i].dt_recebimento, x[indiceMaisAntigo].dt_recebimento) < 0
-        ) {
-            indiceMaisAntigo = i;
+    while (fgets(linha, sizeof(linha), primeiroArquivo)) {
+        char *campos[MAX_COLUNAS];
+        int totalCampos = 0;
+
+        // separa a linha em campos usando strtok
+        char *ponteiro = strtok(linha, ";\n");
+        while (ponteiro != NULL && totalCampos < MAX_COLUNAS) {
+            campos[totalCampos++] = ponteiro;
+            ponteiro = strtok(NULL, ";\n");
+        }
+
+        int cnm1 = 0, desm1 = 0, susm1 = 0;
+
+        if (totalCampos > 19 && campos[19][0] != '\0') cnm1 = atoi(campos[19]); // atoi para comparar strings identicas
+        if (totalCampos > 22 && campos[22][0] != '\0') desm1 = atoi(campos[22]);
+        if (totalCampos > 23 && campos[23][0] != '\0') susm1 = atoi(campos[23]);
+
+        if ((cnm1 + desm1 - susm1) != 0) {
+            if (totalCampos > 21) campos[21][0] = '1'; // adiciona 1 a julgadom1
+            if (totalCampos > 21) campos[21][1] = '\0';
+
+            // escreve linha reconstruída
+            for (int i = 0; i < totalCampos; i++) {
+                fputs(campos[i], arquivoNovo);
+                if (i < totalCampos - 1) fputc(';', arquivoNovo);
+            }
+            fputc('\n', arquivoNovo);
         }
     }
-    return x[indiceMaisAntigo].id_processo;
+
+    fclose(primeiroArquivo);
+    fclose(arquivoNovo);
+    return 0;
 }
-
-int processosViolenciaDomestica(Processo *x, int qtd) {
-    int count = 0;
-    for (int i = 0; i < qtd; i++) {
-        if (x[i].flag_violencia_domestica == 1) {
-            count++;
-        }
-    }
-    return count;
-}
-
-
-
-*/

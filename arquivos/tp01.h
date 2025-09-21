@@ -1,7 +1,8 @@
 #ifndef tp01_H
 #define tp01_H
 
-#define CARACTERES_LINHA 1024 
+#define CARACTERES_LINHA 1024
+#define MAX_COLUNAS 128
 #define ERRO -1
 
 typedef struct {
@@ -40,9 +41,12 @@ typedef struct {
 
 } Processo;
 
-// Funções para ler os dados do arquivo CSV e retornar um array de Processos
+// prototipação das funções para ler os dados do arquivo CSV
+
 Processo * ler_Dados(char * nomeArquivo, int *qtd);
+
 void pesquisa_id_ultimo_oj(Processo *A, int *Num, int id_processo);
+void processoMaisAntigo(Processo *A, int Num);
 void contar_flag_violencia_domestica(Processo *A, int Num);
 void contar_flag_feminicidio(Processo *A, int Num);
 void contar_flag_ambiental(Processo *A, int Num);
@@ -51,6 +55,6 @@ void contar_flag_indigenas(Processo *A, int Num);
 void contar_flag_infancia(Processo *A, int Num);
 void dif_dias_processo(Processo *A, int Num, int id_processo);
 void meta1(Processo *A, int Num, int id_processo);
-int processo_mais_antigo(Processo *A, int Num);
+int novoArquivoCsv(const char *entrada, const char *saida);
 
 #endif
