@@ -13,12 +13,6 @@ int main() {
     const char *arquivoOriginal = "TJDFT_filtrado.csv"; // csv original
     const char *arquivoFiltrado = "processosJulgados.csv"; // novo arquivo
 
-    if (novoArquivoCsv(arquivoOriginal, arquivoFiltrado) == 0) {
-        printf("Arquivo '%s' gerado com sucesso!\n", arquivoFiltrado);
-    } else {
-        printf("Falha ao gerar o arquivo filtrado.\n");
-    }
-
     Processo * processos = ler_Dados("TJDFT_filtrado.csv", &Num); // passado com & para receber alterações no ponteiro de num
 
     printf("Foram lidos %d processos no total.\n", Num);
@@ -33,6 +27,12 @@ int main() {
     contar_flag_infancia(processos, Num);   
     dif_dias_processo(processos,Num, 323961068);
     meta1(processos,Num);
+
+    if (novoArquivoCsv(arquivoOriginal, arquivoFiltrado) == 0) {
+        printf("\n-- Arquivo '%s' gerado com sucesso! --", arquivoFiltrado);
+    } else {
+        printf("\nFalha ao gerar o arquivo filtrado.");
+    }
 
     free(processos); // libera memória de "processos"
     return 0;

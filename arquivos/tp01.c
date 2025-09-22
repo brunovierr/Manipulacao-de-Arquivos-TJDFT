@@ -5,17 +5,16 @@
 
 #include "tp01.h"
 
-// Função auxiliar para converter string para int, tratando campos vazios
+// função que retorna atoi (converte string para int) para tratar campos vazios
 int letInt(const char *str)
 {
     if (str == NULL || str[0] == '\0')
     {
-        return 0; // Ou um valor padrão como -1 se 0 for um dado válido
+        return 0;
     }
     return atoi(str);
 }
 
-// Função auxiliar para copiar strings
 void lerString(char *dest, const char *src)
 {
     if (src != NULL)
@@ -28,7 +27,6 @@ void lerString(char *dest, const char *src)
     }
 }
 
-// Função para contar as linhas do arquivo (mantida do seu exemplo)
 int NumProcessos(const char *nomeArquivo)
 {
     FILE *fp = fopen(nomeArquivo, "r");
@@ -37,6 +35,7 @@ int NumProcessos(const char *nomeArquivo)
 
     int linhas = 0;
     char buffer[CARACTERES_LINHA];
+
     // Ignora o cabeçalho
     if (fgets(buffer, sizeof(buffer), fp) != NULL)
     {
@@ -49,9 +48,7 @@ int NumProcessos(const char *nomeArquivo)
     return linhas;
 }
 
-// --- NOVA FUNÇÃO PARA EXTRAIR CAMPOS ---
-// Esta função substitui o strtok e lida com campos vazios (ex: ";;")
-char *obter_proximo_campo(char **ponteiro_linha, const char *delimitador)
+char *obter_proximo_campo(char **ponteiro_linha, const char *delimitador) // ajuste para substituir strtok (que ignora campos vazios ";;")
 {
     if (*ponteiro_linha == NULL)
     {
@@ -63,9 +60,8 @@ char *obter_proximo_campo(char **ponteiro_linha, const char *delimitador)
 
     if (fim_campo != NULL)
     {
-        // Delimitador encontrado, termina o campo atual aqui
         *fim_campo = '\0';
-        *ponteiro_linha = fim_campo + 1; // Avança o ponteiro para depois do delimitador
+        *ponteiro_linha = fim_campo + 1;
     }
     else
     {
@@ -83,7 +79,6 @@ char *obter_proximo_campo(char **ponteiro_linha, const char *delimitador)
     return inicio_campo;
 }
 
-// --- SUA FUNÇÃO PRINCIPAL, AGORA CORRIGIDA ---
 Processo *ler_Dados(char *nomeArquivo, int *Num)
 {
     *Num = 0;
@@ -92,20 +87,20 @@ Processo *ler_Dados(char *nomeArquivo, int *Num)
     if (qtdLinhas <= 0)
     {
         printf("Arquivo vazio, não encontrado ou sem dados após o cabeçalho.\n");
-        return NULL; // Retornar NULL é mais seguro que `exit()`
+        return NULL; // return null em caso de erro
     }
 
     Processo *A = malloc(qtdLinhas * sizeof(Processo));
     if (A == NULL)
     {
-        printf("ERROR: não foi possível alocar memória para %d registros.\n", qtdLinhas);
+        printf("Erro: não foi possível alocar memória para %d registros.\n", qtdLinhas);
         return NULL;
     }
 
     FILE *fp = fopen(nomeArquivo, "r");
     if (fp == NULL)
     {
-        printf("ERROR: não foi possível abrir o arquivo\n");
+        printf("Erro: não foi possível abrir o arquivo\n");
         free(A);
         return NULL;
     }
@@ -113,15 +108,14 @@ Processo *ler_Dados(char *nomeArquivo, int *Num)
     printf("Arquivo aberto com sucesso.\n");
 
     char linha[CARACTERES_LINHA];
-    fgets(linha, CARACTERES_LINHA, fp); // Pula a linha do cabeçalho
+    fgets(linha, CARACTERES_LINHA, fp); // pula cabeçalho
 
     int i = 0;
     while (i < qtdLinhas && fgets(linha, CARACTERES_LINHA, fp))
     {
-        char *ponteiro_linha = linha; // Ponteiro para a posição atual na linha
+        char *ponteiro_linha = linha; // ponteiro para linha
         char *token;
 
-        // Usamos a nova função para obter cada campo
         A[i].id_processo = letInt(obter_proximo_campo(&ponteiro_linha, ";"));
         lerString(A[i].numero_sigilo, obter_proximo_campo(&ponteiro_linha, ";"));
         lerString(A[i].sigla_grau, obter_proximo_campo(&ponteiro_linha, ";"));
@@ -157,9 +151,9 @@ Processo *ler_Dados(char *nomeArquivo, int *Num)
     fclose(fp);
     return A;
 }
+
 void pesquisa_id_ultimo_oj(Processo *A, int *Num, int id_processo)
 { //  id_processo do processo com dt_recebimento mais antigo
-
     for (int i = 0; i < *Num; i++)
     {
         if (A[i].id_processo == id_processo)
@@ -170,49 +164,19 @@ void pesquisa_id_ultimo_oj(Processo *A, int *Num, int id_processo)
     }
 }
 
-int validar_e_extrair_ano(const char* data) {
-    int ano, mes, dia;
-    if (sscanf(data, "%d;%d;%d", &ano, &mes, &dia) == 3) {
-        // Verificação básica: ano 4 dígitos (1900-2100), mes 1-12, dia 1-31
-        // (ajuste os ranges conforme necessário; aqui é uma verificação simples de formato)
-        if (ano >= 1900 && ano <= 2100 && mes >= 1 && mes <= 12 && dia >= 1 && dia <= 31) {
-            return ano;
-        }
-    }
-    return -1; // Inválido
-}
-
-void processoMaisAntigo(Processo *A, int Num) {
-    // o id_processo do processo com dt_recebimento mais antigo (apenas pelo ano);
-    
-    if (Num <= 0) {
-        printf("Sem processos.\n");
-        return; // sem processos
-    }
-
-    // Verificação de formato para todos os processos
+void processoMaisAntigo(Processo *A, int Num) 
+{ // o id_processo do processo com dt_recebimento mais antigo
+    int id = -1;
     for (int i = 0; i < Num; i++) {
-        int ano = validar_e_extrair_ano(A[i].dt_recebimento);
-    }
-
-    // Inicializa com o primeiro processo
-    int id_antigo = A[0].id_processo;
-    int ano_antigo = validar_e_extrair_ano(A[0].dt_recebimento); // Já validado acima
-
-    // Percorre os demais processos, comparando apenas pelo ano
-    for (int i = 1; i < Num; i++) {
-        int ano_atual = validar_e_extrair_ano(A[i].dt_recebimento); // Já validado
-        if (ano_atual < ano_antigo) {
-            ano_antigo = ano_atual;
-            id_antigo = A[i].id_processo;
+        if (strlen(A[i].dt_recebimento) == 0) {
+            continue; // continue para ignorar celulas nulas (vazias)
+        }
+        if (id == -1 || strcmp(A[i].dt_recebimento, A[id].dt_recebimento) < 0) { // se dt_recebimento for menor que a anterior
+            id = i; // atualiza id para o índice do processo mais antigo encontrado até agora
         }
     }
-
-    // Exemplo de saída: imprime o ID do processo mais antigo pelo ano
-    // (ajuste conforme necessário; o código original não tinha saída, mas faz sentido adicionar)
-    printf("Processo mais antigo (pelo ano): %d\n", id_antigo);
+    printf("ID Processo mais antigo: %d\t(%s)\n", A[id].id_processo, A[id].dt_recebimento);
 }
-
 
 void contar_flag_violencia_domestica(Processo *A, int Num)
 { // quantos processos estão relacionadas a causas de violência doméstica
@@ -343,7 +307,7 @@ void meta1(Processo *A, int Num)
 
     for (int i = 0; i < Num; i++)
     {
-        cnm1 += A[i].cnm1;
+        cnm1 += A[i].cnm1; // cnm = cnm + A[i].cnm1
         julgadom1 += A[i].julgadom1;
         desm1 += A[i].desm1;
         susm1 += A[i].susm1;
@@ -351,18 +315,18 @@ void meta1(Processo *A, int Num)
 
     if ((cnm1 + desm1 - susm1) < 0)
     {
-        return;
+        return; // se for menor que 0 incapaz de realizar a conta (return para sair)
     }
 
     double meta1_porcentagem = (double)julgadom1 / (cnm1 + desm1 - susm1) * 100.0; // calculo meta
-    printf("Cumprimento da Meta 1 = %.3f%%\n", meta1_porcentagem);
+    printf("Cumprimento da Meta 1 = %.4f%%\n", meta1_porcentagem);
 }
 
 int novoArquivoCsv(const char *nomeArquivoOriginal, const char *arquivoNovoNome)
 { // gerar um arquivo CSV com todos os processos julgados (mérito) na Meta 1.
 
     FILE *primeiroArquivo = fopen(nomeArquivoOriginal, "r"); // le o arquivo tjdft
-    FILE *arquivoNovo = fopen(arquivoNovoNome, "w");         // cria novo arquivo filtrado
+    FILE *arquivoNovo = fopen(arquivoNovoNome, "w"); // cria novo arquivo filtrado
 
     if (!primeiroArquivo || !arquivoNovo)
     {
@@ -388,7 +352,7 @@ int novoArquivoCsv(const char *nomeArquivoOriginal, const char *arquivoNovoNome)
         int cnm1 = 0, desm1 = 0, susm1 = 0;
 
         if (totalCampos > 19 && campos[19][0] != '\0')
-            cnm1 = atoi(campos[19]); // atoi para comparar strings identicas
+            cnm1 = atoi(campos[19]); // atoi para transformar string em int
         if (totalCampos > 22 && campos[22][0] != '\0')
             desm1 = atoi(campos[22]);
         if (totalCampos > 23 && campos[23][0] != '\0')
@@ -408,7 +372,7 @@ int novoArquivoCsv(const char *nomeArquivoOriginal, const char *arquivoNovoNome)
                 if (i < totalCampos - 1)
                     fputc(';', arquivoNovo);
             }
-            fputc('\n', arquivoNovo);
+            fputc('\n', arquivoNovo); // adiciona quebra de linha no arquivo
         }
     }
 
